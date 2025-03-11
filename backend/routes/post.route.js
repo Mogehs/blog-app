@@ -16,7 +16,7 @@ router.delete("/delete/:postId", verifyToken, deletepost);
 router.put(
   "/update/:postId",
   verifyToken,
-  singleUpload.single("blog-photo"),
+  singleUpload.single("image"),
   updatePost
 );
 
