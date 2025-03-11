@@ -9,6 +9,7 @@ import CreateBlogForm from "./components/dashboard/CreateBlogForm";
 import Home from "./pages/Home";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const MainLayout = () => (
   <div>
@@ -31,13 +32,23 @@ const router = createBrowserRouter([
     children: [{ path: "/", element: <Home /> }],
   },
   {
+    element: (
+      <ProtectedRoute>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: "/dashboard", element: <AdminBlogs /> },
+      { path: "/dashboard/users", element: <User /> },
+      { path: "/dashboard/blog/create", element: <CreateBlogForm /> },
+    ],
+  },
+  {
+    // Keeping login & register outside of ProtectedRoute so unauthenticated users can access them
     element: <AdminLayout />,
     children: [
       { path: "/dashboard/login", element: <Login /> },
       { path: "/dashboard/register", element: <Register /> },
-      { path: "/dashboard", element: <AdminBlogs /> },
-      { path: "/dashboard/users", element: <User /> },
-      { path: "/dashboard/blog/create", element: <CreateBlogForm /> },
     ],
   },
 ]);

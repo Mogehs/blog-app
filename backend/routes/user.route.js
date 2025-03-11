@@ -1,7 +1,7 @@
 import express from "express";
 import {
   deleteUser,
-  getUsers,
+  getUser,
   signin,
   signout,
   signup,
@@ -18,7 +18,7 @@ userRouter
   .route("/update")
   .post(verifyToken, singleUpload.single("profile-pic"), updateUser);
 userRouter.route("/sign-out").post(verifyToken, signout);
-userRouter.route("/get").post(verifyToken, getUsers);
+userRouter.route("/get").get(verifyToken, getUser);
 userRouter.route("/delete").post(verifyToken, deleteUser);
 
 export default userRouter;

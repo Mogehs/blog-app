@@ -219,7 +219,7 @@ export const getUsers = async (req, res, next) => {
 
 export const getUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.userId);
+    const user = await User.findById(req.user.id);
     if (!user) {
       return next(errorHandler(404, "User not found"));
     }

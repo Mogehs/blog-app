@@ -17,10 +17,10 @@ const Hero = () => {
       <div className="relative z-10 flex flex-col md:flex-row items-center max-w-7xl w-full p-6 md:p-10">
         {/* Left Section */}
         <div className="w-full md:w-1/2 lg:pr-20 text-center md:text-left">
-          <h2 className="text-3xl md:text-5xl text-white font-semibold leading-tight">
+          <h2 className="text-3xl md:text-5xl text-[#262626] font-semibold leading-tight">
             Create a Blog
           </h2>
-          <p className="mt-4 md:mt-6 text-white text-sm md:text-lg">
+          <p className="mt-4 md:mt-6 text-[#262626]  text-sm md:text-lg">
             Share your story with the world. Create a beautiful, personalized
             blog that fits your brand. Grow your audience with built-in
             marketing tools, or transform your passion into revenue by gating
