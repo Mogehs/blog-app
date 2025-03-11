@@ -1,16 +1,20 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import "./App.css";
 import AdminNavbar from "./components/dashboard/AdminNavbar";
-// import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import AdminBlogs from "./pages/AdminBlogs";
 import User from "./components/dashboard/User";
 import CreateBlogForm from "./components/dashboard/CreateBlogForm";
 import Home from "./pages/Home";
+import Login from "./components/Login";
+import Register from "./components/Register";
 
 const MainLayout = () => (
   <div>
-    {/* <Navbar /> */}
+    <Navbar />
     <Outlet />
+    <Footer />
   </div>
 );
 
@@ -29,6 +33,8 @@ const router = createBrowserRouter([
   {
     element: <AdminLayout />,
     children: [
+      { path: "/dashboard/login", element: <Login /> },
+      { path: "/dashboard/register", element: <Register /> },
       { path: "/dashboard", element: <AdminBlogs /> },
       { path: "/dashboard/users", element: <User /> },
       { path: "/dashboard/blog/create", element: <CreateBlogForm /> },

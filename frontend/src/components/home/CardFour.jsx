@@ -56,7 +56,7 @@ const CardFour = () => {
             key={currentIndex}
             src={images[currentIndex]}
             alt={`Image ${currentIndex + 1}`}
-            className="w-48 sm:w-56 md:w-64 h-48 sm:h-56 md:h-64 rounded-lg shadow-xl"
+            className="h-full rounded-lg shadow-xl object-contain"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
@@ -70,7 +70,8 @@ const CardFour = () => {
           Manage Daily Workflows
         </h2>
         <p className="text-base sm:text-lg text-gray-900">
-          Use the dashboard to manage your publishing cadence and categories, customize contributor settings, and track analytics.
+          Use the dashboard to manage your publishing cadence and categories,
+          customize contributor settings, and track analytics.
         </p>
 
         {/* Auto-Switching & Hover-Activated Headings */}
@@ -84,7 +85,7 @@ const CardFour = () => {
               animate={{ opacity: currentIndex === index ? 1 : 0.6, x: 0 }}
               transition={{ duration: 0.5 }}
               className={`p-3 rounded-lg cursor-pointer transition-all duration-300 ${
-                currentIndex === index ? "bg-gray-200 text-black" : "text-gray-300"
+                currentIndex === index ? "bg-gray-200 text-black" : "text-black"
               }`}
             >
               <h3 className="text-lg sm:text-xl font-bold">{heading.title}:</h3>

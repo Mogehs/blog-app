@@ -1,41 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 import FroalaEditor from "react-froala-wysiwyg";
 import DOMPurify from "dompurify";
 
+const BLOG_API = import.meta.env.VITE_CREATE_BLOG_API_END_POINT;
+
 const BlogCards = () => {
+  const [blogs, setBlogs] = useState([]);
   const [error, setError] = useState("");
   const [editingBlog, setEditingBlog] = useState(null);
-
-  // ✅ Load blogs from localStorage
-  const [blogs, setBlogs] = useState(() => {
-    const storedBlogs = localStorage.getItem("blogs");
-    return storedBlogs ? JSON.parse(storedBlogs) : [];
-  });
-
   const [formData, setFormData] = useState({
     image: "",
     title: "",
     content: "",
   });
 
-  // ✅ Handle image file selection
+  // Fetch Blogs from API
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await axios.get(`${BLOG_API}/get`);
+        setBlogs(res?.data?.posts);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+        setError("Failed to load blogs. Try again later.");
+      }
+    };
+    fetchBlogs();
+  }, []);
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({ ...formData, image: reader.result }); // Convert image to Base64
+        setFormData({ ...formData, image: reader.result });
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // ✅ Edit function
   const handleEdit = (blog) => {
-    setEditingBlog(blog.id);
+    setEditingBlog(blog._id);
     setFormData({
       image: blog.image || "",
       title: blog.title,
@@ -43,38 +52,40 @@ const BlogCards = () => {
     });
   };
 
-  // ✅ Delete function
-  const handleDelete = (id) => {
-    const updatedBlogs = blogs.filter((blog) => blog.id !== id);
-    setBlogs(updatedBlogs);
-    localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
-    toast.success("Blog deleted successfully!", { autoClose: 1000 });
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${BLOG_API}/delete/${id}`, { withCredentials: true });
+      setBlogs(blogs.filter((blog) => blog._id !== id));
+      toast.success("Blog deleted successfully!", { autoClose: 1000 });
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+      toast.error("Failed to delete the blog.");
+    }
   };
 
-  // ✅ Save function
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.title || !formData.content || !formData.image) {
-      toast.error("All fields, including the image file, are required.", {
+      toast.error("All fields, including the image, are required.", {
         autoClose: 1000,
       });
       return;
     }
 
-    const updatedBlogs = blogs.map((blog) =>
-      blog.id === editingBlog
-        ? {
-            ...blog,
-            title: formData.title,
-            content: formData.content,
-            image: formData.image, // Save image as Base64
-          }
-        : blog
-    );
-
-    setBlogs(updatedBlogs);
-    localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
-    toast.success("Blog updated successfully!", { autoClose: 1000 });
-    setEditingBlog(null);
+    try {
+      const res = await axios.put(
+        `${BLOG_API}/update/${editingBlog}`,
+        formData,
+        { withCredentials: true }
+      );
+      setBlogs(
+        blogs.map((blog) => (blog._id === editingBlog ? res.data : blog))
+      );
+      toast.success("Blog updated successfully!", { autoClose: 1000 });
+      setEditingBlog(null);
+    } catch (error) {
+      console.error("Error updating blog:", error);
+      toast.error("Failed to update the blog.");
+    }
   };
 
   const handleCancel = () => {
@@ -83,8 +94,8 @@ const BlogCards = () => {
 
   return (
     <div className="p-8 bg-[#788673] min-h-[87.5vh]">
-      <Link to="/dashboard/create-form" className="">
-        <button className="relative min-w-[120px] px-4 py-3 text-white/70 rounded-md border border-white/10 bg-gradient-to-b from-[#47515c] to-[#0b151e] shadow-inner transition-all duration-1000 ease-[cubic-bezier(0.15,0.83,0.66,1)] hover:scale-110 hover:-translate-y-1 hover:text-white before:absolute before:w-[70%] before:h-px before:left-[15%] before:bottom-0 before:bg-gradient-to-r before:from-transparent before:via-white before:to-transparent before:opacity-20 hover:before:opacity-100 hover:cursor-pointer my-4">
+      <Link to="/dashboard/blog/create">
+        <button className="relative min-w-[120px] px-4 py-3 text-white/70 rounded-md border border-white/10 bg-gradient-to-b from-[#47515c] to-[#0b151e] shadow-inner transition-all duration-1000 ease-[cubic-bezier(0.15,0.83,0.66,1)] hover:scale-110 hover:-translate-y-1 hover:text-white my-5">
           Create Blog
         </button>
       </Link>
@@ -96,7 +107,7 @@ const BlogCards = () => {
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {blogs.map((blog) => (
             <div
-              key={blog.id}
+              key={blog._id}
               className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >
               <img
@@ -118,9 +129,9 @@ const BlogCards = () => {
                   <div
                     dangerouslySetInnerHTML={{
                       __html:
-                        DOMPurify.sanitize(blog.content) // Remove HTML tags for safe display
-                          .replace(/<[^>]+>/g, "") // Strip remaining HTML tags
-                          .substring(0, 30) + "...", // Show only first 30 characters,
+                        DOMPurify.sanitize(blog.content)
+                          .replace(/<[^>]+>/g, "")
+                          .substring(0, 30) + "...",
                     }}
                   ></div>
                 </div>
@@ -133,7 +144,7 @@ const BlogCards = () => {
                   </button>
                   <button
                     className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 hover:cursor-pointer"
-                    onClick={() => handleDelete(blog.id)}
+                    onClick={() => handleDelete(blog._id)}
                   >
                     Delete
                   </button>
@@ -144,13 +155,9 @@ const BlogCards = () => {
         </div>
       )}
 
-      {/* Edit Form Modal */}
       {editingBlog !== null && (
         <div className="fixed inset-0 bg-gradient-to-b from-[#47515c] to-[#0b151e] bg-opacity-50 flex justify-center items-center py-8 overflow-hidden">
           <div className="bg-[#f3f4f6] w-full md:w-1/2 p-6 rounded-md shadow-lg max-h-screen h-[100%] overflow-y-auto">
-            {error && <p className="text-red-500 text-center my-4">{error}</p>}
-
-            {/* Image Upload Input */}
             <h2 className="text-lg font-semibold">Upload Image</h2>
             <input
               type="file"
@@ -159,7 +166,6 @@ const BlogCards = () => {
               onChange={handleImageChange}
             />
 
-            {/* Image Preview */}
             {formData.image && (
               <img
                 src={formData.image}
@@ -168,7 +174,6 @@ const BlogCards = () => {
               />
             )}
 
-            {/* Blog Title Input */}
             <h2 className="text-lg font-semibold mt-4">Blog Title</h2>
             <input
               type="text"
@@ -180,7 +185,6 @@ const BlogCards = () => {
               }
             />
 
-            {/* Blog Content (Froala Editor) */}
             <h2 className="text-lg font-semibold mt-4">Blog Content</h2>
             <div className="border p-2 mt-1 rounded-md bg-white">
               <FroalaEditor
@@ -191,7 +195,6 @@ const BlogCards = () => {
               />
             </div>
 
-            {/* Buttons */}
             <div className="flex justify-between mt-4">
               <button
                 onClick={handleSave}

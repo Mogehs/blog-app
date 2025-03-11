@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import RichTextEditor from "./RichTextEditor"; // Import Froala Component
+import RichTextEditor from "./RichTextEditor";
+import axios from "axios";
 
 const CreateBlogForm = () => {
   const [formData, setFormData] = useState({
@@ -11,9 +12,10 @@ const CreateBlogForm = () => {
     imagePreview: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  // Function to handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -22,35 +24,40 @@ const CreateBlogForm = () => {
         setFormData({
           ...formData,
           imageFile: file,
-          imagePreview: reader.result, // Convert to Base64
+          imagePreview: reader.result,
         });
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Function to handle blog creation
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!formData.title || !formData.content || !formData.imageFile) {
       toast.error("Please fill all fields, including an image file.", {
         autoClose: 1000,
       });
-      return;
     }
-
-    const newBlog = {
-      id: Date.now(),
-      title: formData.title,
-      content: formData.content,
-      image: formData.imagePreview,
-      createdAt: new Date().toISOString(),
-    };
-
-    const existingBlogs = JSON.parse(localStorage.getItem("blogs")) || [];
-    localStorage.setItem("blogs", JSON.stringify([...existingBlogs, newBlog]));
-
-    toast.success("Blog created successfully!", { autoClose: 1000 });
-    setTimeout(() => navigate("/dashboard"), 1000);
+    const data = new FormData();
+    data.append("title", formData.title);
+    data.append("content", formData.content);
+    data.append("blog-photo", formData.imageFile);
+    const BLOG_API = import.meta.env.VITE_CREATE_BLOG_API_END_POINT;
+    try {
+      setIsLoading(true);
+      let res = await axios.post(`${BLOG_API}/create`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+      if (res.status === 201) {
+        setTimeout(() => navigate("/dashboard"), 1000);
+        return toast.success("Blog created successfully!", { autoClose: 1000 });
+      }
+      return toast.error("Failed To Create The Blog", { autoClose: 900 });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -80,7 +87,6 @@ const CreateBlogForm = () => {
           required
         />
 
-        {/* Image Preview */}
         {formData.imagePreview && (
           <div className="mt-4">
             <img
@@ -93,10 +99,15 @@ const CreateBlogForm = () => {
 
         <div className="flex flex-col sm:flex-row justify-between gap-4 mt-6">
           <button
+            disabled={isLoading}
             onClick={handleCreate}
-            className="w-full sm:w-auto bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-700 transition  hover:cursor-pointer"
+            className={`py-2 px-4 rounded ${
+              isLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-700"
+            }`}
           >
-            Create
+            {isLoading ? " Creating...." : "Create"}
           </button>
           <button
             onClick={() => navigate("/dashboard")}
