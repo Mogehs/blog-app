@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Blogs from "./pages/Blogs";
 
 const MainLayout = () => (
   <div>
@@ -29,7 +30,10 @@ const AdminLayout = () => (
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
-    children: [{ path: "/", element: <Home /> }],
+    children: [
+      { path: "/", element: <Home /> },
+      { path: "/blogs", element: <Blogs /> },
+    ],
   },
   {
     element: (
