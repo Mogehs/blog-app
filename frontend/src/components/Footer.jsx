@@ -117,7 +117,7 @@ const Footer = () => {
         {/* Branding */}
         <div>
           <h3 className="text-white text-2xl font-bold">
-            C<span className="text-amber-300">om</span>pare
+            B<span className="text-amber-300">log</span>Web
           </h3>
           <p className="mt-2 text-md">
             We are proud to be an organizational member of the Electronic

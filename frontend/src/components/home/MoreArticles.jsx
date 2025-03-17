@@ -1,5 +1,6 @@
 import React from "react";
 import blogs from "../../components/blogs/blogData";
+import { Link } from "react-router-dom";
 
 function MoreArticles() {
   // Define an array of colors
@@ -12,7 +13,7 @@ function MoreArticles() {
           More-read Articles
         </h1>
         <button className="text-nowrap px-4 py-2 rounded-md bg-[#fe9456] text-white hover:cursor-pointer">
-          View all
+          <Link to="/blogs"> View all</Link>
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:px-16 xl:px-28">

@@ -49,16 +49,17 @@ const User = () => {
   // Delete User
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`${USER_API}/delete/${id}`, {
-        method: "DELETE",
+      const response = await axios.delete(`${USER_API}/delete/${id}`, {
+        withCredentials: true,
       });
 
-      if (!response.ok) throw new Error("Failed to delete user");
+      if (response.status !== 200) throw new Error("Failed to delete user");
 
       setUsers((prevUsers) => prevUsers.filter((user) => user._id !== id));
       toast.success("User deleted successfully!");
     } catch (error) {
-      toast.error(error.message);
+      console.error(error);
+      toast.error(error.response?.data?.message || "Failed to delete user");
     }
   };
 

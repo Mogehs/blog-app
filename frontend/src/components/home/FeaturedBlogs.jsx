@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function FeaturedBlogs() {
   const [blogs, setBlogs] = useState([]);
@@ -56,40 +57,45 @@ function FeaturedBlogs() {
           <p className="text-gray-500">Check back later for amazing content!</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {blogs.map((blog, index) => (
-            <div
-              key={blog.id}
-              className="p-4 border border-[#dfdfdf] rounded-xl flex flex-col justify-center gap-4"
-            >
-              {/* Image Wrapper with Badge */}
-              <div className="relative w-full">
-                <img
-                  className="w-full md:h-60 rounded-xl"
-                  src={blog.image}
-                  alt={blog.title || "Blog Image"}
-                />
+        <Link to="/blogs">
+          {" "}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {blogs.map((blog, index) => (
+              <div
+                key={blog.id}
+                className="p-4 border border-[#dfdfdf] rounded-xl flex flex-col justify-center gap-4"
+              >
+                {/* Image Wrapper with Badge */}
+                <div className="relative w-full">
+                  <img
+                    className="w-full md:h-60 rounded-xl"
+                    src={blog.image}
+                    alt={blog.title || "Blog Image"}
+                  />
 
-                {/* Dynamic Badge Color */}
-                <span
-                  className={`absolute bottom-2 left-2 ${
-                    badgeColors[index % badgeColors.length]
-                  } text-white text-sm font-semibold px-3 py-1 rounded-md`}
-                >
-                  {blog.category}
-                </span>
+                  {/* Dynamic Badge Color */}
+                  <span
+                    className={`absolute bottom-2 left-2 ${
+                      badgeColors[index % badgeColors.length]
+                    } text-white text-sm font-semibold px-3 py-1 rounded-md`}
+                  >
+                    {blog.category}
+                  </span>
+                </div>
+                <h1 className="font-bold">{blog.title}</h1>
+                <div className="flex justify-between items-center">
+                  <p className="text-[#a5a5a8]">
+                    By:{" "}
+                    <span className="text-black">
+                      {blog.author || "Unknown"}
+                    </span>
+                  </p>
+                  <p className="text-[#a5a5a8]">{blog.createdAt || "1h ago"}</p>
+                </div>
               </div>
-              <h1 className="font-bold">{blog.title}</h1>
-              <div className="flex justify-between items-center">
-                <p className="text-[#a5a5a8]">
-                  By:{" "}
-                  <span className="text-black">{blog.author || "Unknown"}</span>
-                </p>
-                <p className="text-[#a5a5a8]">{blog.createdAt || "1h ago"}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Link>
       )}
     </div>
   );

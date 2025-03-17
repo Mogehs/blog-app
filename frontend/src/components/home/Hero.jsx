@@ -5,7 +5,7 @@ import { CiSearch } from "react-icons/ci";
 
 const Hero = () => {
   return (
-    <div className="bg-[#376ffe] p-4 text-white mt-20 flex flex-col gap-6 relative pb-20">
+    <div className="bg-[#376ffe] p-4 text-white mt-15 flex flex-col gap-6 relative pb-20">
       <h2 className="text-[20px] lg:text-[rem] md:text-[1rem] text-center">
         Home / Blogs
       </h2>

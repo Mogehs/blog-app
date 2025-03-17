@@ -19,7 +19,7 @@ function StayInKnow() {
             placeholder="Email Here"
           />
           <button className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-[#fe9456] text-white px-4 py-2 rounded-lg hover:opacity-80 hover:cursor-pointer">
-            Sign Up
+            <a href="/dashboard/register">Sign Up</a>
           </button>
         </div>
       </div>
