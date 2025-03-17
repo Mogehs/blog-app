@@ -2,14 +2,16 @@ import React from "react";
 
 function Heading() {
   return (
-    <div className="my-8 flex flex-col md:items-center md:justify-center gap-4 p-4">
+    <div className="my-8 flex flex-col md:items-center md:justify-center gap-4 p-4 mt-20">
       <button className="bg-[#EBF1F8] py-2 px-4 rounded text-[#1447e6] font-semibold hover:cursor-pointer">
         Our Blogs
       </button>
-      <h2 className="lg:text-[2.5rem] md:text-[2rem] text-[20px]">
+      <h2 className="lg:text-[2.5rem] md:text-[2rem] text-[20px] text-center">
         Browse Our Resources
       </h2>
-      <p>We Provide tips and resources from industry leaders. For real.</p>
+      <p className="text-center">
+        We Provide tips and resources from industry leaders. For real.
+      </p>
     </div>
   );
 }

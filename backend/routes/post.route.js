@@ -5,6 +5,7 @@ import {
   deletepost,
   getposts,
   updatePost,
+  getPostById,
 } from "../controllers/post.controller.js";
 import { singleUpload } from "../middlewares/multer.js";
 
@@ -12,6 +13,7 @@ const router = express.Router();
 
 router.post("/create", verifyToken, singleUpload.single("blog-photo"), create);
 router.get("/get", getposts);
+router.get("/get/:id", getPostById);
 router.delete("/delete/:postId", verifyToken, deletepost);
 router.put(
   "/update/:postId",

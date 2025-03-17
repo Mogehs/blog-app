@@ -83,6 +83,21 @@ export const getposts = async (req, res, next) => {
   }
 };
 
+export const getPostById = async (req, res, next) => {
+  try {
+    const { id } = req.params; // Extract the post ID from the request params
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.status(200).json({ post });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deletepost = async (req, res, next) => {
   if (!req.user.isAdmin) {
     return next(errorHandler(403, "You are not allowed to delete this post"));

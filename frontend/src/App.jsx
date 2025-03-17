@@ -11,12 +11,13 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Blogs from "./pages/Blogs";
+import CardDetail from "./components/blogs/CardDetail";
+import ContactForm from "./pages/ContactForm";
 
 const MainLayout = () => (
   <div>
     <Navbar />
     <Outlet />
-    <Footer />
   </div>
 );
 
@@ -33,6 +34,8 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/blogs", element: <Blogs /> },
+      { path: "/blog/:id", element: <CardDetail /> },
+      { path: "/contact-us", element: <ContactForm /> },
     ],
   },
   {

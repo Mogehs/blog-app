@@ -6,7 +6,10 @@ import FroalaEditor from "react-froala-wysiwyg";
 import DOMPurify from "dompurify";
 
 const BLOG_API = import.meta.env.VITE_CREATE_BLOG_API_END_POINT;
-
+const stripHtml = (html) => {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return doc.body.textContent || "";
+};
 const BlogCards = () => {
   const [blogs, setBlogs] = useState([]);
   const [error, setError] = useState("");
@@ -17,7 +20,6 @@ const BlogCards = () => {
     content: "",
   });
 
-  // Fetch Blogs from API
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
@@ -33,7 +35,6 @@ const BlogCards = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -75,7 +76,9 @@ const BlogCards = () => {
       const res = await axios.put(
         `${BLOG_API}/update/${editingBlog}`,
         formData,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
       setBlogs(
         blogs.map((blog) => (blog._id === editingBlog ? res.data : blog))
@@ -93,121 +96,125 @@ const BlogCards = () => {
   };
 
   return (
-    <div className="p-8 bg-[#788673] min-h-[87.5vh]">
+    <div className="p-8 bg-gray-900 min-h-screen text-white">
       <Link to="/dashboard/blog/create">
-        <button className="relative min-w-[120px] px-4 py-3 text-white/70 rounded-md border border-white/10 bg-gradient-to-b from-[#47515c] to-[#0b151e] shadow-inner transition-all duration-1000 ease-[cubic-bezier(0.15,0.83,0.66,1)] hover:scale-110 hover:-translate-y-1 hover:text-white my-5">
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-md mb-5 hover:bg-blue-700">
           Create Blog
         </button>
       </Link>
       {error && <p className="text-red-500 text-center my-4">{error}</p>}
 
       {blogs.length === 0 ? (
-        <p>No blogs available. Start creating one!</p>
+        <p className="text-center">No blogs available. Start creating one!</p>
       ) : (
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => (
             <div
               key={blog._id}
-              className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              className="bg-gray-800 p-4 rounded-lg shadow-lg"
             >
               <img
                 src={blog.image}
                 alt={blog.title}
-                className="w-full h-48 object-cover rounded-t-lg"
+                className="w-full h-48 object-cover rounded-lg"
               />
-              <div className="p-4">
-                <p className="text-gray-500 text-sm mb-2">
-                  {new Date(blog.createdAt).toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-                <h2 className="text-xl font-semibold mb-2">{blog.title}</h2>
-                <div className="text-gray-600 mb-4">
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        DOMPurify.sanitize(blog.content)
-                          .replace(/<[^>]+>/g, "")
-                          .substring(0, 30) + "...",
-                    }}
-                  ></div>
-                </div>
-                <div className="flex justify-between mt-4">
-                  <button
-                    className="bg-[#0a2281] text-white px-4 py-2 rounded-md hover:cursor-pointer"
-                    onClick={() => handleEdit(blog)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 hover:cursor-pointer"
-                    onClick={() => handleDelete(blog._id)}
-                  >
-                    Delete
-                  </button>
-                </div>
+              <h2 className="text-xl font-semibold mt-3">{blog.title}</h2>
+              <p className="text-gray-400 text-sm mb-2">
+                {new Date(blog.createdAt).toLocaleDateString()}
+              </p>
+              <p className="text-gray-300">
+                {stripHtml(DOMPurify.sanitize(blog.content)).substring(0, 50) +
+                  "..."}
+              </p>
+              <div className="flex justify-between mt-4">
+                <button
+                  className="bg-blue-500 px-4 py-2 rounded-md hover:bg-blue-700"
+                  onClick={() => handleEdit(blog)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-red-500 px-4 py-2 rounded-md hover:bg-red-700"
+                  onClick={() => handleDelete(blog._id)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
         </div>
       )}
-
       {editingBlog !== null && (
-        <div className="fixed inset-0 bg-gradient-to-b from-[#47515c] to-[#0b151e] bg-opacity-50 flex justify-center items-center py-8 overflow-hidden">
-          <div className="bg-[#f3f4f6] w-full md:w-1/2 p-6 rounded-md shadow-lg max-h-screen h-[100%] overflow-y-auto">
-            <h2 className="text-lg font-semibold">Upload Image</h2>
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full border p-2 mt-2 rounded-md"
-              onChange={handleImageChange}
-            />
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 p-4 transition-opacity duration-300]">
+          <div className="bg-white p-6 rounded-2xl shadow-2xl max-w-3xl flex gap-6 transform scale-100 transition-transform duration-300">
+            {/* Left Side - Image Upload & Preview */}
+            <div className="w-1/2 flex flex-col">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                Edit Blog
+              </h2>
 
-            {formData.image && (
-              <img
-                src={formData.image}
-                alt="Preview"
-                className="w-full h-40 object-cover rounded mt-2"
+              <label className="block text-gray-600 font-medium mb-2">
+                Upload Image
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                className="w-full border p-2 rounded-md cursor-pointer bg-gray-100 hover:bg-gray-200 transition"
+                onChange={handleImageChange}
               />
-            )}
-
-            <h2 className="text-lg font-semibold mt-4">Blog Title</h2>
-            <input
-              type="text"
-              className="w-full border p-2 mt-1 rounded-md"
-              placeholder="Blog Title"
-              value={formData.title}
-              onChange={(e) =>
-                setFormData({ ...formData, title: e.target.value })
-              }
-            />
-
-            <h2 className="text-lg font-semibold mt-4">Blog Content</h2>
-            <div className="border p-2 mt-1 rounded-md bg-white">
-              <FroalaEditor
-                model={formData.content}
-                onModelChange={(content) =>
-                  setFormData({ ...formData, content })
-                }
-              />
+              {formData.image && (
+                <div className="mt-3">
+                  <img
+                    src={formData.image}
+                    alt="Preview"
+                    className="w-full h-52 object-cover rounded-md border shadow-sm"
+                  />
+                </div>
+              )}
             </div>
 
-            <div className="flex justify-between mt-4">
-              <button
-                onClick={handleSave}
-                className="bg-[#2563eb] hover:cursor-pointer text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-              >
-                Save
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-gray-700 text-white hover:cursor-pointer px-4 py-2 rounded-md hover:bg-gray-900 transition"
-              >
-                Cancel
-              </button>
+            {/* Right Side - Title & Content Editor */}
+            <div className="w-1/2 flex flex-col text-black">
+              <label className="block text-gray-600 font-medium">
+                Blog Title
+              </label>
+              <input
+                type="text"
+                className="w-full border p-3 mt-2 rounded-lg bg-gray-100 text-black focus:ring-2 focus:ring-blue-400 transition"
+                placeholder="Enter blog title..."
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+              />
+
+              <label className="block mt-4 text-gray-600 font-medium">
+                Blog Content
+              </label>
+              <div className="border p-2 mt-2 rounded-lg bg-white shadow-sm h-40 overflow-auto">
+                <FroalaEditor
+                  model={formData.content}
+                  onModelChange={(content) =>
+                    setFormData({ ...formData, content })
+                  }
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  onClick={handleCancel}
+                  className="px-5 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-800 transition"
+                >
+                  Save
+                </button>
+              </div>
             </div>
           </div>
         </div>
