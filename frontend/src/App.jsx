@@ -44,7 +44,6 @@ const router = createBrowserRouter([
     ],
   },
   {
-    // Keeping login & register outside of ProtectedRoute so unauthenticated users can access them
     element: <AdminLayout />,
     children: [
       { path: "/dashboard/login", element: <Login /> },
