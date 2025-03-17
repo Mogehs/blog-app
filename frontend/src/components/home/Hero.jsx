@@ -1,47 +1,35 @@
 import React from "react";
-import HeroImage from "/hero1.jpg";
-import HeroBg from "/herobg.jpg";
+import { FaStar } from "react-icons/fa";
+import { FaGear } from "react-icons/fa6";
+import { CiSearch } from "react-icons/ci";
 
 const Hero = () => {
   return (
-    <div
-      className="flex items-center justify-center px-6 py-12 md:px-20 md:h-screen overflow-hidden relative"
-      style={{
-        backgroundImage: `url(${HeroBg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      {/* Overlay */}
+    <div className="bg-[#376ffe] p-4 text-white mt-20 flex flex-col gap-6 relative pb-20">
+      <h2 className="text-[20px] lg:text-[rem] md:text-[1rem] text-center">
+        Home / Blogs
+      </h2>
+      <div className="flex items-center justify-around">
+        <FaGear className="text-[#fe965b] text-[25px]" />
+        <h1 className="lg:text-[2rem] md:text-[1.5rem] text-[20px]">Blogs</h1>
+        <FaStar className="text-[#618bff] text-[25px]" />
+      </div>
+      <p className="text-center">
+        Hot Water Compare System Blog is the top hub for electric, <br />
+        Gas, Solar Systems
+      </p>
 
-      <div className="relative z-10 flex flex-col md:flex-row items-center max-w-7xl w-full p-6 md:p-10">
-        {/* Left Section */}
-        <div className="w-full md:w-1/2 lg:pr-20 text-center md:text-left">
-          <h2 className="text-3xl md:text-5xl text-[#262626] font-semibold leading-tight">
-            Create a Blog
-          </h2>
-          <p className="mt-4 md:mt-6 text-[#262626]  text-sm md:text-lg">
-            Share your story with the world. Create a beautiful, personalized
-            blog that fits your brand. Grow your audience with built-in
-            marketing tools, or transform your passion into revenue by gating
-            access with a paywall.
-          </p>
-          <div className="mt-6 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-            {/* <button className="w-full sm:w-auto px-6 py-3 bg-white text-black font-medium rounded-lg shadow-lg hover:bg-gray-200 transition">
-              GET STARTED
-            </button> */}
-            <button className="text-black text-lg uppercase px-5 py-2 rounded-lg border-2 border-white bg-white shadow-[3px_3px_0px_0px_#000] transition active:shadow-none active:translate-x-[3px] active:translate-y-[3px] hover:scale-105 hover:bg-black hover:text-white transform  all ease-in-out ">
-              GET STARTED
-            </button>
-          </div>
-        </div>
-        {/* Right Section */}
-        <div className="w-full md:w-1/2 flex justify-center md:justify-end mt-8 md:mt-0">
-          <img
-            src={HeroImage}
-            alt="Hero"
-            className="rounded-lg shadow-xl w-full max-w-sm md:max-w-md lg:max-w-lg"
+      {/* Search Bar Positioned at Bottom */}
+      <div className="absolute bottom-[-35px] left-1/2 transform -translate-x-1/2 w-full flex justify-center">
+        <div className="relative w-[90%] md:w-[60%]">
+          <input
+            className="border border-gray-300 rounded-full px-14 py-4 w-full pr-24 text-black shadow-xl"
+            type="text"
+            placeholder="What are you looking for?"
           />
+          <button className="absolute top-1/2 left-4 transform -translate-y-1/2 text-black text-xl hover:opacity-80 hover:cursor-pointer">
+            <CiSearch />
+          </button>
         </div>
       </div>
     </div>
